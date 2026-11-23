@@ -70,7 +70,7 @@ jobs:
           if [ -d /usr/lib/x86_64-linux-gnu/qt6/qml ]; then
             ARGS+=(-I /usr/lib/x86_64-linux-gnu/qt6/qml)
           fi
-          for flag in --import --unqualified --unresolved-type --block-scope-var-declaration; do
+          for flag in --import --unqualified --unresolved-type --missing-property --block-scope-var-declaration; do
             if printf '%s\n' "$HELP_TEXT" | grep -q -- "$flag"; then
               ARGS+=("$flag" disable)
             fi
