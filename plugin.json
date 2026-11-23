@@ -1,0 +1,22 @@
+{
+  "id": "duxKeePassXC",
+  "name": "Dux KeePassXC",
+  "description": "Search and retrieve KeePassXC credentials via Browser Integration.",
+  "version": "1.0.0",
+  "author": "darkliquid",
+  "icon": "encrypted",
+  "type": "launcher",
+  "trigger": "[",
+  "capabilities": [
+    "launcher",
+    "password-search"
+  ],
+  "component": "./DuxKeePassXC.qml",
+  "settings": "./DuxKeePassXCSettings.qml",
+  "requires_dms": ">=1.5.0",
+  "permissions": [
+    "settings_read",
+    "settings_write",
+    "process"
+  ]
+}

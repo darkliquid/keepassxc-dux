@@ -1,0 +1,4 @@
+# Editor / test artifacts
+*.tmp
+.tmp/
+tmp/
