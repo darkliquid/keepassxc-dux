@@ -61,4 +61,4 @@ node --test tests/nacl.test.cjs
 
 ## License
 
-Licensed under the [MIT License](LICENSE). The inlined Curve25519 + XSalsa20 + Poly1305 (`crypto_box`) primitives derived from TweetNaCl / TweetNaCl.js are in the public domain under The Unlicense (<https://unlicense.org/>).
+Licensed under the [MIT License](LICENSE). The inlined Curve25519 + XSalsa20 + Poly1305 (`crypto_box`) primitives derived from TweetNaCl / TweetNaCl.js are in the public domain under The Unlicense (see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
