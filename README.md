@@ -58,3 +58,7 @@ Run the NaCl `crypto_box` and protocol helper unit tests:
 ```bash
 node --test tests/nacl.test.cjs
 ```
+
+## License
+
+Licensed under the [MIT License](LICENSE). The inlined Curve25519 + XSalsa20 + Poly1305 (`crypto_box`) primitives derived from TweetNaCl / TweetNaCl.js are in the public domain under The Unlicense (<https://unlicense.org/>).
