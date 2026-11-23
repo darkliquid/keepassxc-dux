@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Unit Tests & Manifest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate plugin.json manifest
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const assert = require("node:assert/strict");
+            const m = JSON.parse(fs.readFileSync("plugin.json", "utf8"));
+            for (const key of ["id", "name", "version", "type", "component", "settings"]) {
+              assert.equal(typeof m[key], "string", `${key} must be a string`);
+              assert.ok(m[key].trim().length > 0, `${key} must be non-empty`);
+            }
+            assert.ok(fs.existsSync(m.component), `missing component file: ${m.component}`);
+            assert.ok(fs.existsSync(m.settings), `missing settings file: ${m.settings}`);
+          '
+
+      - name: Check test syntax
+        run: node --check tests/nacl.test.cjs
+
+      - name: Run NaCl & protocol tests
+        run: node --test tests/nacl.test.cjs
+
+  qml-lint:
+    name: QML Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt 6 QML tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qt6-declarative-dev-tools qml6-module-qtquick
+
+      - name: Run qmllint
+        run: |
+          if [ -x /usr/lib/qt6/bin/qmllint ]; then
+            QMLLINT=/usr/lib/qt6/bin/qmllint
+          else
+            QMLLINT=$(command -v qmllint)
+          fi
+          "$QMLLINT" --version
+          HELP_TEXT=$("$QMLLINT" --help 2>&1 || true)
+          ARGS=()
+          if [ -d /usr/lib/x86_64-linux-gnu/qt6/qml ]; then
+            ARGS+=(-I /usr/lib/x86_64-linux-gnu/qt6/qml)
+          fi
+          for flag in --import --unqualified --unresolved-type --block-scope-var-declaration; do
+            if printf '%s\n' "$HELP_TEXT" | grep -q -- "$flag"; then
+              ARGS+=("$flag" disable)
+            fi
+          done
+          if printf '%s\n' "$HELP_TEXT" | grep -q -- '--max-warnings'; then
+            ARGS+=(-W 0)
+          fi
+          "$QMLLINT" "${ARGS[@]}" DuxKeePassXC.qml DuxKeePassXCSettings.qml
